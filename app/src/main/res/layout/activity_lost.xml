@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.example.leonte.lostfoundapp.LostActivity">
+
+        <LinearLayout
+            android:id="@+id/line1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <EditText
+                    android:id="@+id/iLostEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="I LOST"
+                    android:inputType="text"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    />
+            </android.support.design.widget.TextInputLayout>
+        </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/line2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/line1"
+            >
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/placesLostWidget"
+                android:layout_width="230dp"
+                android:layout_height="wrap_content">
+                <EditText
+                    android:id="@+id/whereLostText"
+                    android:layout_width="230dp"
+                    android:layout_height="wrap_content"
+                    android:hint="Where?"
+                    android:inputType="text"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    />
+            </android.support.design.widget.TextInputLayout>
+            <Button
+                android:id="@+id/viewOnMapButton"
+                style="?android:textAppearanceSmall"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/placesLostWidget"
+                android:text="VM"
+                android:textStyle="bold" />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/line3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_below="@+id/line2"
+            >
+
+                <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <EditText
+                    android:id="@+id/whenLostText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hingigt="When?"
+                    android:inputType="text"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    />
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <EditText
+                        android:id="@+id/descriptionLostText"
+                        android:layout_height="wrap_content"
+                        android:layout_width="fill_parent"
+                        android:hint="Description"
+                        android:inputType="textMultiLine"
+                        android:lines="3"
+                        android:maxLines="5"
+                        android:gravity="top|left"
+                        android:scrollbars="vertical"
+                    />
+                </android.support.design.widget.TextInputLayout>
+
+                <Button
+                    android:id="@+id/postLostButton"
+                    style="?android:textAppearanceSmall"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="POST"
+                    android:textStyle="bold" />
+
+        </LinearLayout>
+
+</RelativeLayout>
+
