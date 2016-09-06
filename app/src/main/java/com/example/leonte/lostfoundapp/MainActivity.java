@@ -79,16 +79,6 @@ public class MainActivity extends AppCompatActivity
         phoneNumberMainAppText = (TextView) navHeaderView.findViewById(R.id.phoneNumberMainAppText);
     }
 
-    @Override
-    public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if(drawer.isDrawerOpen(GravityCompat.START)){
-            drawer.closeDrawer(GravityCompat.START);
-        }else{
-            Intent intent = new Intent(MainActivity.this,OptionsActivity.class);
-            startActivity(intent);
-        }
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

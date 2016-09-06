@@ -5,9 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.leonte.lostfoundapp.model.User;
@@ -63,11 +61,11 @@ public class RegisterActivity extends AppCompatActivity{
     }
 
     private void initComponents() {
-        usernameEditText = (EditText) findViewById(R.id.usernameEditText);
-        passwordEditText = (EditText) findViewById(R.id.passwordEditText);
+        usernameEditText = (EditText) findViewById(R.id.txtUsername);
+        passwordEditText = (EditText) findViewById(R.id.txtPassword);
         retypePasswordEditText = (EditText) findViewById(R.id.retypePasswordEditText);
         phoneNumberEditText = (EditText) findViewById(R.id.phoneNumberEditText);
-        registerButton = (Button) findViewById(R.id.registerButton);
+        registerButton = (Button) findViewById(R.id.btnRegister);
     }
 
     private void clearFields(){
