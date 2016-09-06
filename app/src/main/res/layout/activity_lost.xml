@@ -78,7 +78,7 @@
                     android:id="@+id/whenLostText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hingigt="When?"
+                    android:hint="When?"
                     android:inputType="text"
                     android:maxLines="1"
                     android:singleLine="true"

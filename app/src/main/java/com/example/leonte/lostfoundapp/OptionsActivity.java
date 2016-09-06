@@ -33,7 +33,7 @@ public class OptionsActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(OptionsActivity.this,LostActivity.class);
                 intent.putExtra("username",username);
-                int ent.putExtra("password",password);
+                intent.putExtra("password",password);
                 intent.putExtra("phoneNumber",phoneNumber);
                 startActivity(intent);
             }
