@@ -13,6 +13,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.leonte.lostfoundapp.model.User;
 import com.example.leonte.lostfoundapp.service.LoginWSController;
 
 public class LoginActivity extends AppCompatActivity {
@@ -83,21 +84,29 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 
-    private class LoginAsyncTask extends AsyncTask<String, Void, String> {
+    private class LoginAsyncTask extends AsyncTask<String, Void, Boolean> {
 
         @Override
-        protected void onPostExecute(String s) {
+        protected void onPostExecute(Boolean b) {
+            String s;
+            if (b) {
+                s = "Successful Login";
+            } else {
+                s = "Error Login";
+            }
             Toast.makeText(LoginActivity.this, s, Toast.LENGTH_SHORT).show();
         }
 
         @Override
-        protected String doInBackground(String... params) {
+        protected Boolean doInBackground(String... params) {
             String username = params[0];
             String password = params[1];
 
-            String resp = LoginWSController.getInstance().login(username, password);
-            if (resp == null) Log.d("raspuns", "null");
-            return resp;
+            User user = new User(username, password, "074000000000");
+
+            boolean login = LoginWSController.getInstance().login(user);
+
+            return login;
         }
     }
 
