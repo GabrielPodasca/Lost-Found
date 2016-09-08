@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.cg.lostfoundapp.model.LoginWSResponse;
 import com.cg.lostfoundapp.model.User;
 import com.cg.lostfoundapp.service.LoginWSController;
 import com.cg.lostfoundapp.service.UserService;
@@ -82,7 +83,7 @@ public class RegisterActivity extends AppCompatActivity{
 
 
 
-    private class RegisterAsyncTask extends AsyncTask<String, Void, Boolean> {
+    private class RegisterAsyncTask extends AsyncTask<String, Void, LoginWSResponse> {
 
         @Override
         protected void onPreExecute() {
@@ -90,26 +91,28 @@ public class RegisterActivity extends AppCompatActivity{
         }
 
         @Override
-        protected void onPostExecute(Boolean response) {
+        protected void onPostExecute(LoginWSResponse response) {
 
             registerButton.setEnabled(true);
 
-            if (response) {
-                        Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
-                        intent.putExtra("username",username);
-                        intent.putExtra("password",password);
-                        intent.putExtra("phoneNumber",phoneNumber);
-                        startActivity(intent);
-                        finish();
+            if (response!=null) {
+                Toast.makeText(RegisterActivity.this, response.getMessage(), Toast.LENGTH_SHORT).show();
+                if (response.getUser()!=null) {
+                    Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
+                    intent.putExtra("username",response.getUser().getUsername());
+                    intent.putExtra("password",response.getUser().getPassword());
+                    intent.putExtra("phoneNumber",response.getUser().getPhoneNumber());
+                    startActivity(intent);
+                    finish();
+                }
             } else {
-                Toast.makeText(RegisterActivity.this,"Error registering!",Toast.LENGTH_SHORT).show();
-                clearFields();
+                Toast.makeText(RegisterActivity.this, "Server communication error!", Toast.LENGTH_SHORT).show();
             }
 
         }
 
         @Override
-        protected Boolean doInBackground(String... params) {
+        protected LoginWSResponse doInBackground(String... params) {
 
             String username = params[0];
             String password = params[1];
@@ -117,7 +120,7 @@ public class RegisterActivity extends AppCompatActivity{
 
             User user = new User(username, password, phoneNumber);
 
-            boolean response = LoginWSController.getInstance().register(user);
+            LoginWSResponse response = LoginWSController.getInstance().register(user);
 
             return response;
         }

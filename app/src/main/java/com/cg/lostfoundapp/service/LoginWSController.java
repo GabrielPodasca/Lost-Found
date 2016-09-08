@@ -2,6 +2,7 @@ package com.cg.lostfoundapp.service;
 
 import android.util.Log;
 
+import com.cg.lostfoundapp.model.LoginWSResponse;
 import com.cg.lostfoundapp.model.User;
 
 import org.ksoap2.SoapEnvelope;
@@ -33,7 +34,7 @@ public class LoginWSController {
         return SingletonHolder.SINGLETON;
     }
 
-    public User login(User user){
+    public LoginWSResponse login(User user){
 
 
         try {
@@ -44,9 +45,10 @@ public class LoginWSController {
             //for request parameter
             request.addProperty("user", user);
 
-            //for response to be mapped to User object..
+            //for response to be mapped to LoginWSResponse object..
             SoapObject rtemplate = new SoapObject(NAMESPACE, "loginResponse");
             env.addTemplate(rtemplate);
+            env.addMapping(NAMESPACE, "loginWSResponse", LoginWSResponse.class);
             env.addMapping(NAMESPACE, "user", User.class);
 
             env.setOutputSoapObject(request);
@@ -54,7 +56,7 @@ public class LoginWSController {
             HttpTransportSE transport = new HttpTransportSE(URL);
             transport.call(NAMESPACE + METHOD_LOGIN, env);
 
-            User response = (User) env.getResponse();
+            LoginWSResponse response = (LoginWSResponse) env.getResponse();
 
             return response;
 
@@ -66,7 +68,7 @@ public class LoginWSController {
         return null;
     }
 
-    public boolean register(User user){
+    public LoginWSResponse register(User user){
         try {
             SoapObject request = new SoapObject(NAMESPACE, METHOD_REGISTER);
             SoapSerializationEnvelope env =
@@ -75,18 +77,25 @@ public class LoginWSController {
             //for request parameter
             request.addProperty("user", user);
 
+
+            //for response to be mapped to LoginWSResponse object..
+            SoapObject rtemplate = new SoapObject(NAMESPACE, "registerResponse");
+            env.addTemplate(rtemplate);
+            env.addMapping(NAMESPACE, "loginWSResponse", LoginWSResponse.class);
+            env.addMapping(NAMESPACE, "user", User.class);
+
             env.setOutputSoapObject(request);
             env.dotNet = false;
             HttpTransportSE transport = new HttpTransportSE(URL);
             transport.call(NAMESPACE + METHOD_REGISTER, env);
 
-            SoapPrimitive response = (SoapPrimitive) env.getResponse();
-            return Boolean.parseBoolean(response.toString());
+            LoginWSResponse response = (LoginWSResponse) env.getResponse();
+            return response;
 
         }catch (Exception e){
             e.printStackTrace();
         }
 
-        return false;
+        return null;
     }
 }

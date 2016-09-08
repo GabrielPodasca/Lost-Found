@@ -13,6 +13,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.cg.lostfoundapp.model.LoginWSResponse;
 import com.cg.lostfoundapp.model.User;
 import com.cg.lostfoundapp.service.LoginWSController;
 
@@ -84,27 +85,26 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 
-    private class LoginAsyncTask extends AsyncTask<String, Void, User> {
+    private class LoginAsyncTask extends AsyncTask<String, Void, LoginWSResponse> {
 
         @Override
-        protected void onPostExecute(User response) {
-            String s;
+        protected void onPostExecute(LoginWSResponse response) {
             if (response!=null) {
-                s = "Successful Login";
+                Toast.makeText(LoginActivity.this, response.getMessage(), Toast.LENGTH_SHORT).show();
             } else {
-                s = "Error Login";
+                Toast.makeText(LoginActivity.this, "Server communication error!", Toast.LENGTH_SHORT).show();
             }
-            Toast.makeText(LoginActivity.this, s, Toast.LENGTH_SHORT).show();
+
         }
 
         @Override
-        protected User doInBackground(String... params) {
+        protected LoginWSResponse doInBackground(String... params) {
             String username = params[0];
             String password = params[1];
 
             User user = new User(username, password);
 
-            User response = LoginWSController.getInstance().login(user);
+            LoginWSResponse response = LoginWSController.getInstance().login(user);
 
             return response;
         }
