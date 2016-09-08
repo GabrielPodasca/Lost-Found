@@ -102,7 +102,7 @@ public class LoginActivity extends AppCompatActivity {
             String username = params[0];
             String password = params[1];
 
-            User user = new User(username, password, "074000000000");
+            User user = new User(username, password);
 
             User response = LoginWSController.getInstance().login(user);
 

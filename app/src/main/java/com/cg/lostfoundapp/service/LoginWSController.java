@@ -52,7 +52,6 @@ public class LoginWSController {
             env.setOutputSoapObject(request);
             env.dotNet = false;
             HttpTransportSE transport = new HttpTransportSE(URL);
-            transport.debug = true;
             transport.call(NAMESPACE + METHOD_LOGIN, env);
 
             User response = (User) env.getResponse();
@@ -67,26 +66,27 @@ public class LoginWSController {
         return null;
     }
 
-    public String register(String username, String password){
+    public boolean register(User user){
         try {
             SoapObject request = new SoapObject(NAMESPACE, METHOD_REGISTER);
             SoapSerializationEnvelope env =
-                    new SoapSerializationEnvelope(SoapEnvelope.VER12);
-            request.addProperty(PARAM_USERNAME, username);
-            request.addProperty(PARAM_PASSWORD, password);
+                    new SoapSerializationEnvelope(SoapEnvelope.VER11);
+
+            //for request parameter
+            request.addProperty("user", user);
 
             env.setOutputSoapObject(request);
-
-
+            env.dotNet = false;
             HttpTransportSE transport = new HttpTransportSE(URL);
             transport.call(NAMESPACE + METHOD_REGISTER, env);
 
             SoapPrimitive response = (SoapPrimitive) env.getResponse();
-            return response.toString();
+            return Boolean.parseBoolean(response.toString());
+
         }catch (Exception e){
             e.printStackTrace();
         }
 
-        return null;
+        return false;
     }
 }

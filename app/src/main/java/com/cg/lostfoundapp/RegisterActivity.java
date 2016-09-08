@@ -1,6 +1,7 @@
 package com.cg.lostfoundapp;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -9,6 +10,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.cg.lostfoundapp.model.User;
+import com.cg.lostfoundapp.service.LoginWSController;
 import com.cg.lostfoundapp.service.UserService;
 
 public class RegisterActivity extends AppCompatActivity{
@@ -37,20 +39,24 @@ public class RegisterActivity extends AppCompatActivity{
                 if(password.equals(retypePasswordEditText.getText().toString())){
                     username = usernameEditText.getText().toString();
                     phoneNumber = phoneNumberEditText.getText().toString();
-                    String message = UserService.getInstance().register(RegisterActivity.this,username,password,phoneNumber);
-                    if(message.equals("nok")){
-                        Toast.makeText(RegisterActivity.this,"Username not available!",Toast.LENGTH_SHORT).show();
-                        clearFields();
-                    }
-                    if(message.equals("ok")){
-                        //Toast.makeText(RegisterActivity.this,"Success!",Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
-                        intent.putExtra("username",username);
-                        intent.putExtra("password",password);
-                        intent.putExtra("phoneNumber",phoneNumber);
-                        startActivity(intent);
-                        //finish();
-                    }
+
+                    new RegisterAsyncTask().execute(username, password, phoneNumber);
+//                    String message = UserService.getInstance().register(RegisterActivity.this,username,password,phoneNumber);
+//                    if(message.equals("nok")){
+//                        Toast.makeText(RegisterActivity.this,"Username not available!",Toast.LENGTH_SHORT).show();
+//                        clearFields();
+//                    }
+//                    if(message.equals("ok")){
+//
+//                        new RegisterAsyncTask().execute(username, password, phoneNumber);
+//                        Toast.makeText(RegisterActivity.this,"Success!",Toast.LENGTH_SHORT).show();
+//                        Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
+//                        intent.putExtra("username",username);
+//                        intent.putExtra("password",password);
+//                        intent.putExtra("phoneNumber",phoneNumber);
+//                        startActivity(intent);
+//                        finish();
+//                    }
 
                 }else{
                     Toast.makeText(RegisterActivity.this,"Re-type password again!",Toast.LENGTH_SHORT).show();
@@ -71,5 +77,49 @@ public class RegisterActivity extends AppCompatActivity{
     private void clearFields(){
         usernameEditText.setText("");
         retypePasswordEditText.setText("");
+        phoneNumberEditText.setText("");
+    }
+
+
+
+    private class RegisterAsyncTask extends AsyncTask<String, Void, Boolean> {
+
+        @Override
+        protected void onPreExecute() {
+            registerButton.setEnabled(false);
+        }
+
+        @Override
+        protected void onPostExecute(Boolean response) {
+
+            registerButton.setEnabled(true);
+
+            if (response) {
+                        Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
+                        intent.putExtra("username",username);
+                        intent.putExtra("password",password);
+                        intent.putExtra("phoneNumber",phoneNumber);
+                        startActivity(intent);
+                        finish();
+            } else {
+                Toast.makeText(RegisterActivity.this,"Error registering!",Toast.LENGTH_SHORT).show();
+                clearFields();
+            }
+
+        }
+
+        @Override
+        protected Boolean doInBackground(String... params) {
+
+            String username = params[0];
+            String password = params[1];
+            String phoneNumber = params[2];
+
+            User user = new User(username, password, phoneNumber);
+
+            boolean response = LoginWSController.getInstance().register(user);
+
+            return response;
+        }
     }
 }
