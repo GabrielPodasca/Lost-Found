@@ -3,12 +3,12 @@ package com.example.leonte.lostfoundapp.model;
 import org.ksoap2.serialization.KvmSerializable;
 import org.ksoap2.serialization.PropertyInfo;
 
-import java.io.Serializable;
-import java.io.StreamCorruptedException;
 import java.util.Hashtable;
 
 public class User implements KvmSerializable{
-    private long id;
+
+
+    private int id;
     private String username;
     private String password;
     private String telephone;
@@ -30,11 +30,11 @@ public class User implements KvmSerializable{
         this.username = username;
     }
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -81,7 +81,7 @@ public class User implements KvmSerializable{
         switch(i)
         {
             case 0:
-                id = Long.parseLong(o.toString());
+                id = Integer.parseInt(o.toString());
                 break;
             case 1:
                 username = o.toString();
@@ -102,7 +102,7 @@ public class User implements KvmSerializable{
         switch(i)
         {
             case 0:
-                propertyInfo.type = PropertyInfo.LONG_CLASS;
+                propertyInfo.type = PropertyInfo.INTEGER_CLASS;
                 propertyInfo.name = "id";
                 break;
             case 1:

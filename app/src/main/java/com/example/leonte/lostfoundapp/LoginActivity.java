@@ -84,12 +84,12 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 
-    private class LoginAsyncTask extends AsyncTask<String, Void, Boolean> {
+    private class LoginAsyncTask extends AsyncTask<String, Void, User> {
 
         @Override
-        protected void onPostExecute(Boolean b) {
+        protected void onPostExecute(User response) {
             String s;
-            if (b) {
+            if (response!=null) {
                 s = "Successful Login";
             } else {
                 s = "Error Login";
@@ -98,15 +98,15 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         @Override
-        protected Boolean doInBackground(String... params) {
+        protected User doInBackground(String... params) {
             String username = params[0];
             String password = params[1];
 
             User user = new User(username, password, "074000000000");
 
-            boolean login = LoginWSController.getInstance().login(user);
+            User response = LoginWSController.getInstance().login(user);
 
-            return login;
+            return response;
         }
     }
 

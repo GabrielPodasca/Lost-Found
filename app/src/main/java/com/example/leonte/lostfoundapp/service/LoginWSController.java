@@ -1,5 +1,7 @@
 package com.example.leonte.lostfoundapp.service;
 
+import android.util.Log;
+
 import com.example.leonte.lostfoundapp.model.User;
 
 import org.ksoap2.SoapEnvelope;
@@ -31,53 +33,56 @@ public class LoginWSController {
         return SingletonHolder.SINGLETON;
     }
 
-    public boolean login(User user){
+    public User login(User user){
 
-        boolean login = false;
 
         try {
             SoapObject request = new SoapObject(NAMESPACE, METHOD_LOGIN);
             SoapSerializationEnvelope env =
                     new SoapSerializationEnvelope(SoapEnvelope.VER11);
 
-            PropertyInfo userPI = new PropertyInfo();
-            userPI.setName("user");
-            userPI.setValue(user);
-            userPI.setType(user.getClass());
+            //for request parameter
+            request.addProperty("user", user);
 
-            request.addProperty(userPI);
-            
+            //for response to be mapped to User object..
+            SoapObject rtemplate = new SoapObject(NAMESPACE, "loginResponse");
+            env.addTemplate(rtemplate);
+            env.addMapping(NAMESPACE, "user", User.class);
 
             env.setOutputSoapObject(request);
+            env.dotNet = false;
             HttpTransportSE transport = new HttpTransportSE(URL);
+            transport.debug = true;
             transport.call(NAMESPACE + METHOD_LOGIN, env);
 
-            SoapPrimitive response = (SoapPrimitive) env.getResponse();
+            User response = (User) env.getResponse();
 
-            login = Boolean.parseBoolean(response.toString());
+            return response;
 
 
         }catch (Exception e){
             e.printStackTrace();
         }
 
-        return login;
+        return null;
     }
 
     public String register(String username, String password){
         try {
             SoapObject request = new SoapObject(NAMESPACE, METHOD_REGISTER);
             SoapSerializationEnvelope env =
-                    new SoapSerializationEnvelope(SoapEnvelope.VER11);
+                    new SoapSerializationEnvelope(SoapEnvelope.VER12);
             request.addProperty(PARAM_USERNAME, username);
             request.addProperty(PARAM_PASSWORD, password);
 
             env.setOutputSoapObject(request);
+
+
             HttpTransportSE transport = new HttpTransportSE(URL);
             transport.call(NAMESPACE + METHOD_REGISTER, env);
 
-            SoapPrimitive respose = (SoapPrimitive) env.getResponse();
-            return respose.toString();
+            SoapPrimitive response = (SoapPrimitive) env.getResponse();
+            return response.toString();
         }catch (Exception e){
             e.printStackTrace();
         }
