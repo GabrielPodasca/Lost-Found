@@ -3,9 +3,10 @@ package com.cg.lostfoundapp.model;
 import org.ksoap2.serialization.KvmSerializable;
 import org.ksoap2.serialization.PropertyInfo;
 
+import java.io.Serializable;
 import java.util.Hashtable;
 
-public class User implements KvmSerializable{
+public class User implements KvmSerializable, Serializable{
 
 
     private int id;

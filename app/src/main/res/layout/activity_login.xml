@@ -87,4 +87,5 @@
 
         </LinearLayout>
     </ScrollView>
+    <include layout="@layout/progress_overlay"/>
 </RelativeLayout>

@@ -20,6 +20,9 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.cg.lostfoundapp.manager.PreferencesManager;
+import com.cg.lostfoundapp.model.User;
+
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -31,9 +34,11 @@ public class MainActivity extends AppCompatActivity
     private View navHeaderView;
     private TextView usernameMainAppText;
     private TextView phoneNumberMainAppText;
+
     private String username;
-    private String password;
     private String phoneNumber;
+
+    private User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,10 +49,11 @@ public class MainActivity extends AppCompatActivity
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
-            username = extras.getString("username");
-            password = extras.getString("password");
-            phoneNumber = extras.getString("phoneNumber");
+            user = (User) extras.getSerializable("user");
+            username = user.getUsername();
+            phoneNumber = user.getPhoneNumber();
         }
+
         Toast.makeText(MainActivity.this,username,Toast.LENGTH_LONG).show();
         phoneNumberMainAppText.setText(phoneNumber);
         usernameMainAppText.setText(username);
@@ -65,6 +71,7 @@ public class MainActivity extends AppCompatActivity
         adapter.notifyDataSetChanged();
 
         navigationView.setNavigationItemSelectedListener(this);
+
     }
 
     public void initComponents(){
@@ -120,13 +127,22 @@ public class MainActivity extends AppCompatActivity
             }
             item.setTitle(title);
         }else if(id == R.id.navLogout){
-            finish();
             Intent intent = new Intent(MainActivity.this,LoginActivity.class);
+            removeRemember();
             startActivity(intent);
+            finish();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void removeRemember() {
+        PreferencesManager preferencesManager = new PreferencesManager(this);
+        preferencesManager
+                .remove("username")
+                .remove("password")
+                .commit();
     }
 }

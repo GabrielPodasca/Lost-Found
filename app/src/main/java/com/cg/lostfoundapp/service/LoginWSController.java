@@ -21,9 +21,6 @@ public class LoginWSController {
     private static final String METHOD_LOGIN = "login";
     private static final String METHOD_REGISTER = "register";
 
-    private static final String PARAM_USERNAME = "username";
-    private static final String PARAM_PASSWORD = "password";
-
     private LoginWSController(){}
 
     private static final class SingletonHolder{
