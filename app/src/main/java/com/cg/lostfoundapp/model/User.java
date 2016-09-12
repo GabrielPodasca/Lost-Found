@@ -127,4 +127,9 @@ public class User implements KvmSerializable, Serializable{
                 break;
         }
     }
+
+    @Override
+    public String toString() {
+        return username;
+    }
 }

@@ -57,10 +57,14 @@ public class LoginActivity extends AppCompatActivity {
         progressOverlay = findViewById(R.id.progress_overlay);
 
         Bundle extras = getIntent().getExtras();
+
         if(extras != null){
             User user = (User) extras.getSerializable("user");
-            txtUsername.setText(user.getUsername());
-            txtPassword.setText(user.getPassword());
+            if (user!=null) {
+                txtUsername.setText(user.getUsername());
+                txtPassword.setText(user.getPassword());
+            }
+
         }
     }
 
@@ -91,12 +95,13 @@ public class LoginActivity extends AppCompatActivity {
         cbRememberMe.setChecked(rememberMe);
 
         username = preferencesManager.getString("username");
-        password = preferencesManager.getString("password");
-        txtUsername.setText(username);
-        txtPassword.setText(password);
+        password = preferencesManager.getStringSecure("password");
+
 
         if (username!=null
                 && password!=null) {
+            txtUsername.setText(username);
+            txtPassword.setText(password);
             executeLoginTask(username,password);
         }
     }
@@ -105,7 +110,7 @@ public class LoginActivity extends AppCompatActivity {
         preferencesManager
                 .setBoolean("remember", true)
                 .setString("username", username)
-                .setString("password", password)
+                .setStringSecure("password", password)
                 .commit();
     }
 

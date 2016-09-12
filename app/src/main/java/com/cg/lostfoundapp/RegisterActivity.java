@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -12,6 +13,7 @@ import android.widget.Toast;
 import com.cg.lostfoundapp.model.LoginWSResponse;
 import com.cg.lostfoundapp.model.User;
 import com.cg.lostfoundapp.service.LoginWSController;
+import com.cg.lostfoundapp.utils.ViewUtils;
 
 public class RegisterActivity extends AppCompatActivity{
     private String username;
@@ -23,6 +25,8 @@ public class RegisterActivity extends AppCompatActivity{
     private EditText retypePasswordEditText;
     private EditText phoneNumberEditText;
     private Button registerButton;
+
+    View progressOverlay;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +45,8 @@ public class RegisterActivity extends AppCompatActivity{
         retypePasswordEditText = (EditText) findViewById(R.id.retypePasswordEditText);
         phoneNumberEditText = (EditText) findViewById(R.id.phoneNumberEditText);
         registerButton = (Button) findViewById(R.id.btnRegister);
+
+        progressOverlay = findViewById(R.id.progress_overlay);
     }
 
     private void initEvents() {
@@ -70,11 +76,13 @@ public class RegisterActivity extends AppCompatActivity{
         @Override
         protected void onPreExecute() {
             registerButton.setEnabled(false);
+            ViewUtils.animateView(progressOverlay, View.VISIBLE, 0.4f, 200);
         }
 
         @Override
         protected void onPostExecute(LoginWSResponse response) {
 
+            ViewUtils.animateView(progressOverlay, View.GONE, 0, 200);
             registerButton.setEnabled(true);
 
             if (response!=null) {

@@ -50,8 +50,11 @@ public class MainActivity extends AppCompatActivity
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             user = (User) extras.getSerializable("user");
-            username = user.getUsername();
-            phoneNumber = user.getPhoneNumber();
+            if (user!=null) {
+                username = user.getUsername();
+                phoneNumber = user.getPhoneNumber();
+            }
+
         }
 
         Toast.makeText(MainActivity.this,username,Toast.LENGTH_LONG).show();

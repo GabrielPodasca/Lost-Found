@@ -3,6 +3,8 @@ package com.cg.lostfoundapp.manager;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.cg.lostfoundapp.utils.EncryptUtils;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -29,13 +31,30 @@ public class PreferencesManager {
 
 
     public PreferencesManager setString(String key, String value) {
-        editor.putString(key, value);
+        if (value!=null) {
+            editor.putString(key, value);
+        } else {
+            editor.remove(key);
+        }
         return this;
     }
 
 
     public String getString(String key) {
         return sharedPreferences.getString(key, null);
+    }
+
+    public PreferencesManager setStringSecure(String key, String value) {
+        if (value!=null) {
+            String encryptedValue = EncryptUtils.getInstance().encryptValue(value);
+            return setString(key, encryptedValue);
+        }
+        return setString(key, value);
+    }
+
+    public String getStringSecure(String key) {
+        String value = getString(key);
+        return value!=null? EncryptUtils.getInstance().decrypt(value) : null;
     }
 
     public PreferencesManager setBoolean(String key, boolean value) {
@@ -69,6 +88,8 @@ public class PreferencesManager {
     public float getLong(String key) {
         return sharedPreferences.getLong(key, 0);
     }
+
+
 
     public PreferencesManager setLong(String key, long value) {
         editor.putLong(key, value);
