@@ -2,6 +2,20 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <group
+        android:id="@+id/group1"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/menuItemLost"
+            android:icon="@drawable/ic_menu_slideshow"
+            android:title="I LOST" />
+        <item
+            android:id="@+id/menuItemFound"
+            android:icon="@drawable/ic_menu_slideshow"
+            android:title="I FOUND" />
+    </group>
+
+    <group
+        android:id="@+id/group2"
         android:checkableBehavior="single">
         <item
             android:id="@+id/navMyItems"
@@ -13,13 +27,15 @@
             android:title="Switch List(LOST ON)" />
     </group>
 
-    <item>
-        <menu>
-            <item
-                android:id="@+id/navLogout"
-                android:icon="@drawable/ic_menu_send"
-                android:title="Logout"/>
-        </menu>
-    </item>
+    <group
+        android:id="@+id/group3"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/navLogout"
+            android:icon="@drawable/ic_menu_slideshow"
+            android:title="Logout" />
+    </group>
+
+
 
 </menu>

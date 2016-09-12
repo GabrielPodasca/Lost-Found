@@ -117,9 +117,21 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         int id = item.getItemId();
 
+        if(id == R.id.menuItemLost){
+            Intent intent = new Intent(MainActivity.this,LostActivity.class);
+            startActivity(intent);
+        }
+
+        if(id == R.id.menuItemFound){
+            Intent intent = new Intent(MainActivity.this,FoundActivity.class);
+            startActivity(intent);
+        }
+
         if(id == R.id.navMyItems){
             Toast.makeText(MainActivity.this,"MY ITEMS LIST ON",Toast.LENGTH_LONG).show();
-        }else if(id == R.id.navSwitchLists){
+        }
+
+        if(id == R.id.navSwitchLists){
             String title = item.getTitle().toString();
             if(title.equals("Switch List(LOST ON)")){
                 title = "Switch List(FOUND ON)";
@@ -129,7 +141,9 @@ public class MainActivity extends AppCompatActivity
                 Toast.makeText(MainActivity.this,"LOST LIST ON",Toast.LENGTH_LONG).show();
             }
             item.setTitle(title);
-        }else if(id == R.id.navLogout){
+        }
+
+        if(id == R.id.navLogout){
             Intent intent = new Intent(MainActivity.this,LoginActivity.class);
             removeRemember();
             startActivity(intent);
