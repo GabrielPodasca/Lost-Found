@@ -1,11 +1,10 @@
-package com.cg.lostfoundapp;
+package com.cg.lostfoundapp.activities;
 
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -13,6 +12,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.cg.lostfoundapp.R;
 import com.cg.lostfoundapp.manager.PreferencesManager;
 import com.cg.lostfoundapp.model.LoginWSResponse;
 import com.cg.lostfoundapp.model.User;

@@ -16,7 +16,7 @@ import org.ksoap2.transport.HttpTransportSE;
  * Created by Client2_2 on 9/6/2016.
  */
 public class LoginWSController {
-    private static final String URL = "http://192.168.0.13:8080/LoginWS/LoginWS?wsdl";
+    private static final String URL = "http://192.168.1.6:8080/LoginWS/LoginWS?wsdl";
     private static final String NAMESPACE = "http://ws/";
     private static final String METHOD_LOGIN = "login";
     private static final String METHOD_REGISTER = "register";

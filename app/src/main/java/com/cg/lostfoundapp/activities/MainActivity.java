@@ -1,11 +1,7 @@
-package com.cg.lostfoundapp;
+package com.cg.lostfoundapp.activities;
 
-import android.content.ClipData;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -20,6 +16,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.cg.lostfoundapp.R;
 import com.cg.lostfoundapp.manager.PreferencesManager;
 import com.cg.lostfoundapp.model.User;
 
@@ -118,12 +115,14 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if(id == R.id.menuItemLost){
-            Intent intent = new Intent(MainActivity.this,LostActivity.class);
+            //i lost on intent extra
+            Intent intent = new Intent(MainActivity.this,LostOrFoundActivity.class);
             startActivity(intent);
         }
 
         if(id == R.id.menuItemFound){
-            Intent intent = new Intent(MainActivity.this,FoundActivity.class);
+            //i found on intent extra
+            Intent intent = new Intent(MainActivity.this,LostOrFoundActivity.class);
             startActivity(intent);
         }
 
