@@ -43,7 +43,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/line1">
 
-        <EditText
+        <AutoCompleteTextView
             android:id="@+id/autocompletePlaces"
             android:layout_width="match_parent"
             android:layout_height="50dp"
@@ -52,13 +52,14 @@
             android:layout_marginLeft="10dp"
             android:paddingLeft="8dp"
             android:paddingRight="9dp"
-            android:singleLine="true"
+            android:inputType="textMultiLine"
             android:background="@drawable/edit_text_style"
             android:textColorHint="@color/grey"
             android:hint="@string/autocomplete_hint"
             android:drawableLeft="@drawable/search"
             android:drawablePadding="9dp"
             android:textColor="@android:color/primary_text_light" />
+
 
         <ImageView
             android:id="@+id/cross"
@@ -68,14 +69,6 @@
             android:layout_marginTop="26dp"
             android:layout_marginRight="20dp"
             android:src="@drawable/cross"/>
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recyclerView"
-            android:scrollbars="vertical"
-            android:layout_marginTop="10dp"
-            android:layout_below="@+id/autocompletePlaces"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
     </RelativeLayout>
 
     <RelativeLayout
