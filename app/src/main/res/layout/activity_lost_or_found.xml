@@ -43,7 +43,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/line1">
 
-        <AutoCompleteTextView
+        <com.cg.lostfoundapp.widget.DelayedAutocompleteTextView
             android:id="@+id/autocompletePlaces"
             android:layout_width="match_parent"
             android:layout_height="50dp"

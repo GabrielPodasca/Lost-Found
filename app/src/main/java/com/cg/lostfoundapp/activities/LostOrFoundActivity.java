@@ -34,6 +34,8 @@ public class LostOrFoundActivity extends AppCompatActivity implements GoogleApiC
     private static final LatLngBounds BOUNDS = new LatLngBounds(
             new LatLng(43.992815, 19.863281), new LatLng(48.195387, 30.761719));
 
+    private static final int SEARCH_THRESHOLD = 4;
+
     private AutoCompleteTextView autocompletePlaces;
 
     private PlacesAutoCompleteAdapter autoCompleteAdapter;
@@ -57,9 +59,34 @@ public class LostOrFoundActivity extends AppCompatActivity implements GoogleApiC
 
     }
 
-    private void initComponents(){
-        iFoundEditText = (EditText) findViewById(R.id.iFoundEditText);
+    protected synchronized void buildGoogleApiClient() {
+        googleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .addApi(Places.GEO_DATA_API)
+                .build();
+    }
 
+    private void initComponents(){
+
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            itemStatus = extras.getString("itemStatus");
+        }
+
+
+        iFoundEditText = (EditText) findViewById(R.id.iFoundEditText);
+        initAutocomplete();
+        whenLostText = (EditText) findViewById(R.id.whenTxt);
+        descriptionLostText = (EditText) findViewById(R.id.descriptionText);
+        postLostButton = (Button) findViewById(R.id.postButton);
+
+
+
+    }
+
+    private void initAutocomplete() {
         autocompletePlaces = (AutoCompleteTextView)findViewById(R.id.autocompletePlaces);
         deleteImage=(ImageView)findViewById(R.id.cross);
 
@@ -72,26 +99,9 @@ public class LostOrFoundActivity extends AppCompatActivity implements GoogleApiC
         );
 
         autocompletePlaces.setAdapter(autoCompleteAdapter);
-        whenLostText = (EditText) findViewById(R.id.whenTxt);
-        descriptionLostText = (EditText) findViewById(R.id.descriptionText);
-        postLostButton = (Button) findViewById(R.id.postButton);
-
-        Bundle extras = getIntent().getExtras();
-        if (extras != null) {
-            itemStatus = extras.getString("itemStatus");
-        }
-
-
+        autocompletePlaces.setThreshold(SEARCH_THRESHOLD);
     }
 
-    protected synchronized void buildGoogleApiClient() {
-        googleApiClient = new GoogleApiClient.Builder(this)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(LocationServices.API)
-                .addApi(Places.GEO_DATA_API)
-                .build();
-    }
 
     @Override
     public void onConnected(Bundle bundle){
