@@ -104,7 +104,7 @@
         style="?android:textAppearanceSmall"
         android:textStyle="bold"
         android:text="HERE"/>
-
+        <include layout="@layout/progress_overlay"/>
     </LinearLayout>
 
     <RelativeLayout
@@ -171,6 +171,6 @@
             android:textStyle="bold" />
 
     </LinearLayout>
-
 </RelativeLayout>
+
 </ScrollView>

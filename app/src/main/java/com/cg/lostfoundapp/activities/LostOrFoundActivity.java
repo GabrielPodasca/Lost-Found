@@ -1,16 +1,11 @@
 package com.cg.lostfoundapp.activities;
 
-import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
@@ -24,12 +19,12 @@ import com.cg.lostfoundapp.adapters.PlacesAutoCompleteAdapter;
 import com.cg.lostfoundapp.model.PlacesAutocomplete;
 import com.cg.lostfoundapp.model.PlacesDetails;
 import com.cg.lostfoundapp.utils.PlacesUtils;
+import com.cg.lostfoundapp.utils.ViewUtils;
 import com.cg.lostfoundapp.widget.DelayedAutocompleteTextView;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.PlaceLikelihood;
 import com.google.android.gms.location.places.PlaceLikelihoodBuffer;
@@ -40,9 +35,6 @@ import com.google.android.gms.location.places.ui.PlacePicker;
 
 public class LostOrFoundActivity extends AppCompatActivity {
 
-    private static final int GOOGLE_API_CLIENT_ID = 0;
-    private static final int PERMISSION_REQUEST_CODE = 100;
-    private static final int SEARCH_THRESHOLD = 4;
 
 
     private DelayedAutocompleteTextView autocompletePlaces;
@@ -57,6 +49,8 @@ public class LostOrFoundActivity extends AppCompatActivity {
     private EditText descriptionLostText;
     private Button postLostButton;
     private String itemStatus;
+
+    View progressOverlay;
 
 
 
@@ -123,7 +117,7 @@ public class LostOrFoundActivity extends AppCompatActivity {
         descriptionLostText = (EditText) findViewById(R.id.descriptionText);
         postLostButton = (Button) findViewById(R.id.postButton);
 
-
+        progressOverlay = findViewById(R.id.progress_overlay);
 
     }
 
@@ -134,7 +128,7 @@ public class LostOrFoundActivity extends AppCompatActivity {
         autoCompleteAdapter =  new PlacesAutoCompleteAdapter(this);
 
         autocompletePlaces.setAdapter(autoCompleteAdapter);
-        autocompletePlaces.setThreshold(SEARCH_THRESHOLD);
+        autocompletePlaces.setThreshold(PlacesUtils.SEARCH_THRESHOLD);
 
         autocompletePlaces.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -175,17 +169,14 @@ public class LostOrFoundActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (googleApiClient!=null && googleApiClient.isConnected()) {
-                    System.out.println(Build.VERSION.SDK_INT);
-                    if (ContextCompat.checkSelfPermission(LostOrFoundActivity.this, Manifest.permission.ACCESS_FINE_LOCATION)
-                            != PackageManager.PERMISSION_GRANTED) {
 
-                        ActivityCompat.requestPermissions(
-                                LostOrFoundActivity.this,
-                                new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                                PERMISSION_REQUEST_CODE);
+                    if (!PlacesUtils.getInstance().checkLocationEnabled(LostOrFoundActivity.this)) {
+                        Toast.makeText(LostOrFoundActivity.this, "Please enable Location on device!", Toast.LENGTH_SHORT).show();
                     } else {
+
                         callPlaceDetectionApi();
                     }
+
 
                 } else {
                     Toast.makeText(LostOrFoundActivity.this, "Google Play services error!", Toast.LENGTH_SHORT).show();
@@ -195,6 +186,9 @@ public class LostOrFoundActivity extends AppCompatActivity {
     }
 
     private void callPlaceDetectionApi() throws SecurityException {
+
+        ViewUtils.animateView(progressOverlay, View.VISIBLE, 0.4f, 200);
+
         PendingResult<PlaceLikelihoodBuffer> result = Places.PlaceDetectionApi
                 .getCurrentPlace(googleApiClient, null);
         result.setResultCallback(new ResultCallback<PlaceLikelihoodBuffer>() {
@@ -231,6 +225,8 @@ public class LostOrFoundActivity extends AppCompatActivity {
                 }
 
                 likelyPlaces.release();
+
+                ViewUtils.animateView(progressOverlay, View.GONE, 0, 200);
             }
         });
     }
@@ -251,18 +247,6 @@ public class LostOrFoundActivity extends AppCompatActivity {
 
         } else {
             super.onActivityResult(requestCode, resultCode, data);
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        switch (requestCode) {
-            case PERMISSION_REQUEST_CODE:
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    callPlaceDetectionApi();
-                }
-                break;
         }
     }
 

@@ -1,5 +1,8 @@
 package com.cg.lostfoundapp.utils;
 
+import android.content.Context;
+import android.location.LocationManager;
+
 import com.cg.lostfoundapp.model.PlacesAutocomplete;
 import com.cg.lostfoundapp.model.PlacesDetails;
 import com.google.android.gms.maps.model.LatLng;
@@ -21,6 +24,8 @@ public class PlacesUtils {
 
     public static final LatLngBounds BOUNDS_ROMANIA = new LatLngBounds(
             new LatLng(44.019718, 19.948352), new LatLng(48.456215, 29.584792));
+
+    public static final int SEARCH_THRESHOLD = 4;
 
     public static final int PLACE_PICKER_REQUEST = 1;
 
@@ -137,4 +142,12 @@ public class PlacesUtils {
         return jsonObj;
     }
 
+    public boolean checkLocationEnabled(Context context) {
+        LocationManager locationManager = (LocationManager)
+                context.getSystemService(Context.LOCATION_SERVICE);
+        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
+                && !locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
+                ) return false;
+        return true;
+    }
 }
