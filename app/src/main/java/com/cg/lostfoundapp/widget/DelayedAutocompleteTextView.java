@@ -15,6 +15,8 @@ public class DelayedAutocompleteTextView extends AutoCompleteTextView{
     private static final int MESSAGE_TEXT_CHANGED = 1;
     private static final int DEFAULT_AUTOCOMPLETE_DELAY = 700;
 
+    private boolean isSearchEnabled = true;
+
     private final Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -26,10 +28,17 @@ public class DelayedAutocompleteTextView extends AutoCompleteTextView{
         super(context, attrs);
     }
 
+    public void setSearchEnabled(boolean isEnabled) {
+        isSearchEnabled = isEnabled;
+    }
+
     @Override
     protected void performFiltering(CharSequence text, int keyCode) {
 
         handler.removeMessages(MESSAGE_TEXT_CHANGED);
-        handler.sendMessageDelayed(handler.obtainMessage(MESSAGE_TEXT_CHANGED, keyCode, 0, text), DEFAULT_AUTOCOMPLETE_DELAY);
+        if (isSearchEnabled) {
+            handler.sendMessageDelayed(handler.obtainMessage(MESSAGE_TEXT_CHANGED, keyCode, 0, text), DEFAULT_AUTOCOMPLETE_DELAY);
+        }
+
     }
 }

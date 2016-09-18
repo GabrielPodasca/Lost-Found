@@ -70,12 +70,48 @@
             android:layout_marginRight="20dp"
             android:src="@drawable/cross"/>
     </RelativeLayout>
-
-    <RelativeLayout
+    <LinearLayout
         android:id="@+id/line3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/line2"
+        android:layout_marginTop="26dp"
+        android:layout_marginLeft="30dp"
+        >
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="OR"
+
+        />
+    <Button
+        android:id="@+id/btnPickLocation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="?android:textAppearanceSmall"
+        android:textStyle="bold"
+        android:text="PICK LOCATION"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="OR"
+
+        />
+    <Button
+        android:id="@+id/btnHere"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="?android:textAppearanceSmall"
+        android:textStyle="bold"
+        android:text="HERE"/>
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/line4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/line3"
         >
         <android.support.design.widget.TextInputLayout
             android:id="@+id/whenFoundWidget"
@@ -102,11 +138,11 @@
     </RelativeLayout>
 
     <LinearLayout
-        android:id="@+id/line4"
+        android:id="@+id/line5"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_below="@+id/line3"
+        android:layout_below="@+id/line4"
         >
 
         <android.support.design.widget.TextInputLayout
