@@ -70,6 +70,7 @@
             android:layout_marginRight="20dp"
             android:src="@drawable/cross"/>
     </RelativeLayout>
+
     <LinearLayout
         android:id="@+id/line3"
         android:layout_width="wrap_content"
@@ -107,35 +108,28 @@
         <include layout="@layout/progress_overlay"/>
     </LinearLayout>
 
-    <RelativeLayout
+    <LinearLayout
         android:id="@+id/line4"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/line3"
-        >
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/whenFoundWidget"
-            android:layout_width="230dp"
-            android:layout_height="wrap_content">
-            <EditText
-                android:id="@+id/whenTxt"
-                android:layout_width="230dp"
-                android:layout_height="wrap_content"
-                android:hint="When?"
-                android:inputType="text"
-                android:maxLines="1"
-                android:singleLine="true"
-                />
-        </android.support.design.widget.TextInputLayout>
-        <Button
-            android:id="@+id/nowButton"
-            style="?android:textAppearanceSmall"
-            android:layout_width="wrap_content"
+        android:layout_marginTop="26dp"
+        android:layout_below="@+id/line3">
+
+        <EditText
+            android:id="@+id/txtSetDateAndTime"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/whenFoundWidget"
-            android:text="NOW"
-            android:textStyle="bold" />
-    </RelativeLayout>
+            android:hint="Select date and time"
+            android:inputType="text"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:clickable="false"
+            android:cursorVisible="false"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            />
+
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/line5"
