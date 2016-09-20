@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Editable;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -222,6 +221,7 @@ public class LostOrFoundActivity extends AppCompatActivity {
         btnPickLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                ViewUtils.animateView(progressOverlay, View.VISIBLE, 0.4f, 200);
                 try {
                     PlacePicker.IntentBuilder intentBuilder = new PlacePicker.IntentBuilder();
                     intentBuilder.setLatLngBounds(PlacesUtils.BOUNDS_ROMANIA);
@@ -229,6 +229,7 @@ public class LostOrFoundActivity extends AppCompatActivity {
                     startActivityForResult(intent, PlacesUtils.PLACE_PICKER_REQUEST);
 
                 } catch (Exception e) {
+                    ViewUtils.animateView(progressOverlay, View.GONE, 0, 200);
                     Toast.makeText(LostOrFoundActivity.this, "Google Play services error!", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -262,9 +263,10 @@ public class LostOrFoundActivity extends AppCompatActivity {
         result.setResultCallback(new ResultCallback<PlaceLikelihoodBuffer>() {
             @Override
             public void onResult(PlaceLikelihoodBuffer likelyPlaces) {
-
                 if (likelyPlaces.getStatus().getStatusCode()!= PlacesStatusCodes.SUCCESS) {
+                    ViewUtils.animateView(progressOverlay, View.GONE, 0, 200);
                     Toast.makeText(LostOrFoundActivity.this, "Please enable Location on device!", Toast.LENGTH_SHORT).show();
+                    return;
                 }
 
                 float maxLikelihood = 0.0f, currentLikelihood;
@@ -303,7 +305,7 @@ public class LostOrFoundActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == PlacesUtils.PLACE_PICKER_REQUEST
                 && resultCode == Activity.RESULT_OK) {
-            final Place place = PlacePicker.getPlace(this, data);
+            final Place place = PlacePicker.getPlace(data,this);
 
             String address = place.getAddress().toString();
 
@@ -312,6 +314,8 @@ public class LostOrFoundActivity extends AppCompatActivity {
             autocompletePlaces.setSearchEnabled(true);
 
             placesDetails = new PlacesDetails(place.getLatLng(), address);
+
+            ViewUtils.animateView(progressOverlay, View.GONE, 0, 200);
 
         } else {
             super.onActivityResult(requestCode, resultCode, data);

@@ -58,7 +58,7 @@ public class PlacesUtils {
 
             StringBuilder sb = new StringBuilder(PLACES_API_BASE + TYPE_AUTOCOMPLETE + OUT_JSON);
             sb.append("?key=" + API_KEY);
-            sb.append("&types=address");
+            //sb.append("&types=address");
             sb.append("&components=" + COUNTRY_RESTRICTION);
             sb.append("&input=" + URLEncoder.encode(input, "utf8"));
 
