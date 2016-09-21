@@ -19,6 +19,7 @@ import android.widget.Toast;
 import com.cg.lostfoundapp.R;
 import com.cg.lostfoundapp.adapters.ItemFoundAdapter;
 import com.cg.lostfoundapp.manager.PreferencesManager;
+import com.cg.lostfoundapp.model.Item;
 import com.cg.lostfoundapp.model.FoundItem;
 import com.cg.lostfoundapp.model.User;
 
@@ -63,6 +64,14 @@ public class MainActivity extends AppCompatActivity
 
         }
 
+
+        if (user == null) {
+            removeRemember();
+            finish();
+        }
+
+
+ 
         phoneNumberMainAppText.setText(phoneNumber);
         usernameMainAppText.setText(username);
 
@@ -118,12 +127,16 @@ public class MainActivity extends AppCompatActivity
         if(id == R.id.menuItemLost){
             //i lost on intent extra
             Intent intent = new Intent(MainActivity.this,LostOrFoundActivity.class);
+            intent.putExtra("itemType", Item.LOST);
+            intent.putExtra("user", user);
             startActivity(intent);
         }
 
         if(id == R.id.menuItemFound){
             //i found on intent extra
             Intent intent = new Intent(MainActivity.this,LostOrFoundActivity.class);
+            intent.putExtra("itemType", Item.FOUND);
+            intent.putExtra("user", user);
             startActivity(intent);
         }
 

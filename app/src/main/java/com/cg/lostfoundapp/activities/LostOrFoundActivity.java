@@ -21,8 +21,11 @@ import com.cg.lostfoundapp.R;
 import com.cg.lostfoundapp.adapters.PlacesAutoCompleteAdapter;
 import com.cg.lostfoundapp.fragments.DatePickerFragment;
 import com.cg.lostfoundapp.fragments.TimePickerFragment;
+import com.cg.lostfoundapp.model.Item;
 import com.cg.lostfoundapp.model.PlacesAutocomplete;
 import com.cg.lostfoundapp.model.PlacesDetails;
+import com.cg.lostfoundapp.model.User;
+import com.cg.lostfoundapp.service.ItemWSController;
 import com.cg.lostfoundapp.utils.PlacesUtils;
 import com.cg.lostfoundapp.utils.ViewUtils;
 import com.cg.lostfoundapp.widget.DelayedAutocompleteTextView;
@@ -38,6 +41,7 @@ import com.google.android.gms.location.places.PlacesStatusCodes;
 import com.google.android.gms.location.places.ui.PlacePicker;
 
 import java.util.Calendar;
+import java.util.Date;
 
 
 public class LostOrFoundActivity extends AppCompatActivity {
@@ -45,26 +49,27 @@ public class LostOrFoundActivity extends AppCompatActivity {
 
 
     private DelayedAutocompleteTextView autocompletePlaces;
-    private Button btnPickLocation;
-    private Button btnHere;
 
     private PlacesAutoCompleteAdapter autoCompleteAdapter;
-    ImageView deleteImage;
+
 
     private EditText iFoundEditText;
-    private EditText whenLostText;
-    private EditText descriptionLostText;
-    private Button postLostButton;
-    private String itemStatus;
+    private Button btnPickLocation;
+    private Button btnHere;
+    private EditText descriptionText;
+    private Button postButton;
     private EditText txtSetDateAndTime;
+    private ImageView deleteImage;
+    private View progressOverlay;
 
+    private String itemName, itemDescription;
+    private String itemType;
     private int year, month, day, hour, minute;
-
-    View progressOverlay;
-
-
-
+    private User user;
     private PlacesDetails placesDetails;
+
+
+
 
     private GoogleApiClient googleApiClient;
 
@@ -79,61 +84,6 @@ public class LostOrFoundActivity extends AppCompatActivity {
         setContentView(R.layout.activity_lost_or_found);
 
         initComponents();
-
-        txtSetDateAndTime.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                DialogFragment dateFragment = new DatePickerFragment(){
-                    @Override
-                    public void onDateSet(DatePicker view, int y, int m, int d) {
-                        year = y;
-                        month = m + 1;
-                        day = d;
-
-                        DialogFragment timeFragment = new TimePickerFragment(){
-                            @Override
-                            public void onTimeSet(TimePicker view, int h, int m) {
-                                if (isToday()){
-                                    Calendar calendar = Calendar.getInstance();
-                                    int currentHour = calendar.get(Calendar.HOUR_OF_DAY);
-                                    int currentMinute = calendar.get(Calendar.MINUTE);
-
-                                    if(h > currentHour){
-                                        hour = currentHour;
-                                        minute = currentMinute;
-                                    }
-
-                                    if(h < currentHour){
-                                        hour = h;
-                                        minute = m;
-                                    }
-
-                                    if(h == currentHour){
-                                        hour = currentHour;
-                                        if(m > currentMinute){
-                                            minute = currentMinute;
-                                        }else{
-                                            minute = m;
-                                        }
-                                    }
-                                }else{
-                                    hour = h;
-                                    minute = m;
-                                }
-
-                                txtSetDateAndTime.setText(zeroFormat(day) + "-" +
-                                        zeroFormat(month) + "-" +
-                                        year + "   @   " +
-                                        zeroFormat(hour) + " : " +
-                                        zeroFormat(minute));
-                            }
-                        };
-                        timeFragment.show(getFragmentManager(), "Time Picker");
-                    }
-                };
-                dateFragment.show(getFragmentManager(), "Date Picker");
-            }
-        });
 
     }
 
@@ -170,23 +120,33 @@ public class LostOrFoundActivity extends AppCompatActivity {
 
     private void initComponents(){
 
+
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
-            itemStatus = extras.getString("itemStatus");
+            itemType = extras.getString("itemType");
+            user = (User) extras.getSerializable("user");
+            System.out.println(user);
+        } else {
+            finish();
         }
+
 
 
         iFoundEditText = (EditText) findViewById(R.id.iFoundEditText);
         initPlaces();
-        descriptionLostText = (EditText) findViewById(R.id.descriptionText);
-        postLostButton = (Button) findViewById(R.id.postButton);
-
-        txtSetDateAndTime = (EditText) findViewById(R.id.txtSetDateAndTime);
-
-
+        initTime();
+        descriptionText = (EditText) findViewById(R.id.descriptionText);
+        postButton = (Button) findViewById(R.id.postButton);
+        postButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                postItem();
+            }
+        });
         progressOverlay = findViewById(R.id.progress_overlay);
 
     }
+
 
     private void initPlaces() {
         autocompletePlaces = (DelayedAutocompleteTextView) findViewById(R.id.autocompletePlaces);
@@ -301,6 +261,89 @@ public class LostOrFoundActivity extends AppCompatActivity {
         });
     }
 
+    private void initTime() {
+
+        txtSetDateAndTime = (EditText) findViewById(R.id.txtSetDateAndTime);
+
+        txtSetDateAndTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DialogFragment dateFragment = new DatePickerFragment(){
+                    @Override
+                    public void onDateSet(DatePicker view, int y, int m, int d) {
+                        year = y;
+                        month = m + 1;
+                        day = d;
+
+                        DialogFragment timeFragment = new TimePickerFragment(){
+                            @Override
+                            public void onTimeSet(TimePicker view, int h, int m) {
+                                if (isToday()){
+                                    Calendar calendar = Calendar.getInstance();
+                                    int currentHour = calendar.get(Calendar.HOUR_OF_DAY);
+                                    int currentMinute = calendar.get(Calendar.MINUTE);
+
+                                    if(h > currentHour){
+                                        hour = currentHour;
+                                        minute = currentMinute;
+                                    }
+
+                                    if(h < currentHour){
+                                        hour = h;
+                                        minute = m;
+                                    }
+
+                                    if(h == currentHour){
+                                        hour = currentHour;
+                                        if(m > currentMinute){
+                                            minute = currentMinute;
+                                        }else{
+                                            minute = m;
+                                        }
+                                    }
+                                }else{
+                                    hour = h;
+                                    minute = m;
+                                }
+
+                                txtSetDateAndTime.setText(zeroFormat(day) + "-" +
+                                        zeroFormat(month) + "-" +
+                                        year + "   @   " +
+                                        zeroFormat(hour) + " : " +
+                                        zeroFormat(minute));
+                            }
+                        };
+                        timeFragment.show(getFragmentManager(), "Time Picker");
+                    }
+                };
+                dateFragment.show(getFragmentManager(), "Date Picker");
+            }
+        });
+    }
+
+
+    public boolean isToday(){
+        Calendar calendar = Calendar.getInstance();
+        int y = calendar.get(Calendar.YEAR);
+        int m = calendar.get(Calendar.MONTH);
+        int d = calendar.get(Calendar.DAY_OF_MONTH);
+
+        if((year == y)&&(month == (m+1))&&(day == d)){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    public String zeroFormat(int x){
+        if (x <=9){
+            return "0"+x;
+        }else{
+            return String.valueOf(x);
+        }
+    }
+
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == PlacesUtils.PLACE_PICKER_REQUEST
@@ -320,6 +363,52 @@ public class LostOrFoundActivity extends AppCompatActivity {
         } else {
             super.onActivityResult(requestCode, resultCode, data);
         }
+    }
+
+    private void postItem() {
+
+        itemName = iFoundEditText.getText().toString();
+        itemDescription = descriptionText.getText().toString();
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.YEAR, year);
+        calendar.set(Calendar.MONTH, month - 1);
+        calendar.set(Calendar.DAY_OF_MONTH, day);
+        calendar.set(Calendar.HOUR_OF_DAY, hour);
+        calendar.set(Calendar.MINUTE, minute);
+        Date when = calendar.getTime();
+
+        try {
+            validateItem();
+        }
+        catch(Exception e) {
+            Toast.makeText(this,e.getMessage(),Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+
+        Item item = new Item(itemName, itemDescription, placesDetails.latLng.latitude,
+                placesDetails.latLng.longitude, placesDetails.address, when, itemType, user);
+
+        new ItemAddAsyncTask().execute(item);
+
+    }
+
+    private void validateItem() throws Exception{
+
+
+        if (itemName == null || itemName.trim().isEmpty()) {
+            throw new Exception("Please tell us what you lost/found!");
+        }
+        if (placesDetails == null) {
+            throw new Exception("Please tell us where you lost/found the item!");
+        }
+        if (year <= 0 || month <= 0 || day <= 0 || hour <= 0 || minute <= 0) {
+            throw new Exception("Please tell us when you lost/found the item!");
+        }
+        if (itemDescription == null || itemDescription.trim().isEmpty()) {
+            throw new Exception("Please describe the item!");
+        }
+
     }
 
     @Override
@@ -359,24 +448,12 @@ public class LostOrFoundActivity extends AppCompatActivity {
         }
     }
 
-    public boolean isToday(){
-        Calendar calendar = Calendar.getInstance();
-        int y = calendar.get(Calendar.YEAR);
-        int m = calendar.get(Calendar.MONTH);
-        int d = calendar.get(Calendar.DAY_OF_MONTH);
+    private class ItemAddAsyncTask extends AsyncTask<Item, Void, Void> {
 
-        if((year == y)&&(month == (m+1))&&(day == d)){
-            return true;
-        }else{
-            return false;
-        }
-    }
-
-    public String zeroFormat(int x){
-        if (x <=9){
-            return "0"+x;
-        }else{
-            return String.valueOf(x);
+        @Override
+        protected Void doInBackground(Item... params) {
+            ItemWSController.getInstance().add(params[0]);
+            return null;
         }
     }
 
