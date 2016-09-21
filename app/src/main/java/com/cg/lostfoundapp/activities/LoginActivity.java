@@ -103,6 +103,7 @@ public class LoginActivity extends AppCompatActivity {
             txtUsername.setText(username);
             txtPassword.setText(password);
             executeLoginTask(username,password);
+
         }
     }
 

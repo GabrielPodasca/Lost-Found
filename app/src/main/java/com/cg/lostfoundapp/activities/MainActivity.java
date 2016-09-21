@@ -17,14 +17,20 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cg.lostfoundapp.R;
+import com.cg.lostfoundapp.adapters.ItemFoundAdapter;
 import com.cg.lostfoundapp.manager.PreferencesManager;
+import com.cg.lostfoundapp.model.FoundItem;
 import com.cg.lostfoundapp.model.User;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private ListView showItemsList;
-    private ArrayAdapter<String> adapter;
+    private ListView foundList;
+    private ArrayList<FoundItem> foundItemList = new ArrayList<>();
+    private ItemFoundAdapter foundListAdapter = new ItemFoundAdapter(this,foundItemList);
+
     private Toolbar toolbar;
     private DrawerLayout drawer;
     private NavigationView navigationView;
@@ -44,6 +50,9 @@ public class MainActivity extends AppCompatActivity
 
         initComponents();
 
+        foundList.setAdapter(foundListAdapter);
+        fillFoundItemList();
+
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             user = (User) extras.getSerializable("user");
@@ -54,7 +63,6 @@ public class MainActivity extends AppCompatActivity
 
         }
 
-        Toast.makeText(MainActivity.this,username,Toast.LENGTH_LONG).show();
         phoneNumberMainAppText.setText(phoneNumber);
         usernameMainAppText.setText(username);
 
@@ -64,12 +72,6 @@ public class MainActivity extends AppCompatActivity
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
-        showItemsList.setAdapter(adapter);
-        for(int i=0;i<10;i++){
-            adapter.add(i+"");
-        }
-        adapter.notifyDataSetChanged();
-
         navigationView.setNavigationItemSelectedListener(this);
 
     }
@@ -77,8 +79,7 @@ public class MainActivity extends AppCompatActivity
     public void initComponents(){
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        showItemsList = (ListView) findViewById(R.id.showItemsList);
-        adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1);
+        foundList = (ListView) findViewById(R.id.foundList);
 
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navHeaderView = navigationView.inflateHeaderView(R.layout.nav_header_main);
@@ -160,5 +161,20 @@ public class MainActivity extends AppCompatActivity
                 .remove("username")
                 .remove("password")
                 .commit();
+    }
+
+    //se va inlocui cu metoda care populeaza lista de obiecte gasite
+    public void fillFoundItemList(){
+        foundItemList.add(new FoundItem("Caine", "Azi @ 08:00"));
+        foundItemList.add(new FoundItem("Portofel", "10-09-2016 @ 12:00"));
+        foundItemList.add(new FoundItem("Legitimatie", "Ieri @ 12:43"));
+        foundItemList.add(new FoundItem("Caine", "Azi @ 08:00"));
+        foundItemList.add(new FoundItem("Portofel", "10-09-2016 @ 12:00"));
+        foundItemList.add(new FoundItem("Legitimatie", "Ieri @ 12:43"));
+        foundItemList.add(new FoundItem("Caine", "Azi @ 08:00"));
+        foundItemList.add(new FoundItem("Portofel", "10-09-2016 @ 12:00"));
+        foundItemList.add(new FoundItem("Legitimatie", "Ieri @ 12:43"));
+
+        foundListAdapter.notifyDataSetChanged();
     }
 }
