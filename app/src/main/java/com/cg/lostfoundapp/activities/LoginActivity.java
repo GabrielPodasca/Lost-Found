@@ -75,6 +75,14 @@ public class LoginActivity extends AppCompatActivity {
 
                 username = txtUsername.getText().toString();
                 password = txtPassword.getText().toString();
+
+                try {
+                    validate();
+                } catch (Exception e) {
+                    Toast.makeText(LoginActivity.this,e.getMessage(),Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
                 executeLoginTask(username, password);
             }
         });
@@ -87,6 +95,19 @@ public class LoginActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+    }
+
+    private void validate() throws Exception{
+
+        if (
+                username == null
+                || username.trim().isEmpty()
+                || password == null
+                || password.trim().isEmpty()
+                ) {
+            throw new Exception("Please fill username/password!");
+        }
+
     }
 
     private void initRemember() {

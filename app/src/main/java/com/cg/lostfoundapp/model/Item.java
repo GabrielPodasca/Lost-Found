@@ -27,7 +27,7 @@ public class Item implements KvmSerializable{
     private String type;
     private User user;
 
-    private Item() {
+    public Item() {
 
     }
 
@@ -164,22 +164,31 @@ public class Item implements KvmSerializable{
         {
             case 0:
                 id = Integer.parseInt(o.toString());
+                break;
             case 1:
                 name = o.toString();
+                break;
             case 2:
                 description = o.toString();
+                break;
             case 3:
                 lat = Double.parseDouble(o.toString());
+                break;
             case 4:
                 lng = Double.parseDouble(o.toString());
+                break;
             case 5:
                 address = o.toString();
+                break;
             case 6:
                 when = (Date)o;
+                break;
             case 7:
                 type = o.toString();
+                break;
             case 8:
                 user = (User)o;
+                break;
         }
     }
 
@@ -223,6 +232,14 @@ public class Item implements KvmSerializable{
                 propertyInfo.type = User.class;
                 propertyInfo.name = "user";
                 break;
+            default:
+                break;
         }
+    }
+
+    @Override
+    public String toString() {
+        return id + " " + name + " " + description + " "
+                + address + " " + lat + " " + lng + " " + when + " " + type + " " + user.getId();
     }
 }

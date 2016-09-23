@@ -54,19 +54,42 @@ public class RegisterActivity extends AppCompatActivity{
         registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 password = passwordEditText.getText().toString();
-                if(password.equals(retypePasswordEditText.getText().toString())){
-                    username = usernameEditText.getText().toString();
-                    phoneNumber = phoneNumberEditText.getText().toString();
+                username = usernameEditText.getText().toString();
+                phoneNumber = phoneNumberEditText.getText().toString();
 
-                    new RegisterAsyncTask().execute(username, password, phoneNumber);
-
-                }else{
-                    Toast.makeText(RegisterActivity.this,"Re-type password again!",Toast.LENGTH_SHORT).show();
-                    retypePasswordEditText.setText("");
+                try {
+                    validate();
+                } catch (Exception e) {
+                    Toast.makeText(RegisterActivity.this, e.getMessage(),Toast.LENGTH_SHORT).show();
+                    return;
                 }
+
+                new RegisterAsyncTask().execute(username, password, phoneNumber);
+               
             }
         });
+    }
+
+    private void validate() throws Exception{
+
+        if (
+                username == null
+                        || username.trim().isEmpty()
+                        || password == null
+                        || password.trim().isEmpty()
+                        || phoneNumber == null
+                        || phoneNumber.trim().isEmpty()
+                ) {
+            throw new Exception("Please fill username/password/phone number!");
+        }
+
+        if(!password.equals(retypePasswordEditText.getText().toString())){
+            retypePasswordEditText.setText("");
+            throw new Exception("Please re-type password!");
+        }
+
     }
 
 

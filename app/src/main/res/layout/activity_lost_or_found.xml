@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/ScrollView01"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent" >
+
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
@@ -15,156 +12,165 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".activities.LostOrFoundActivity">
-
-    <LinearLayout
-        android:id="@+id/line1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-        <android.support.design.widget.TextInputLayout
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/ScrollView01"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" >
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <EditText
-                android:id="@+id/iFoundEditText"
+            android:layout_height="match_parent">
+            <LinearLayout
+                android:id="@+id/line1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="I FOUND/LOST"
-                android:inputType="text"
-                android:maxLines="1"
-                android:singleLine="true"
-                />
-        </android.support.design.widget.TextInputLayout>
-    </LinearLayout>
+                android:orientation="vertical">
 
-    <RelativeLayout
-        android:id="@+id/line2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/line1">
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <EditText
+                        android:id="@+id/iFoundEditText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="I FOUND/LOST"
+                        android:inputType="text"
+                        android:maxLines="1"
+                        android:singleLine="true"
+                        />
+                </android.support.design.widget.TextInputLayout>
+            </LinearLayout>
 
-        <com.cg.lostfoundapp.widget.DelayedAutocompleteTextView
-            android:id="@+id/autocompletePlaces"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginLeft="10dp"
-            android:paddingLeft="8dp"
-            android:paddingRight="9dp"
-            android:inputType="textMultiLine"
-            android:background="@drawable/edit_text_style"
-            android:textColorHint="@color/grey"
-            android:hint="@string/autocomplete_hint"
-            android:drawableLeft="@drawable/search"
-            android:drawablePadding="9dp"
-            android:textColor="@android:color/primary_text_light" />
-
-
-        <ImageView
-            android:id="@+id/cross"
-            android:layout_width="16dp"
-            android:layout_height="16dp"
-            android:layout_alignParentRight="true"
-            android:layout_marginTop="26dp"
-            android:layout_marginRight="20dp"
-            android:src="@drawable/cross"/>
-    </RelativeLayout>
-
-    <LinearLayout
-        android:id="@+id/line3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/line2"
-        android:layout_marginTop="26dp"
-        android:layout_marginLeft="30dp"
-        >
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="OR"
-
-        />
-    <Button
-        android:id="@+id/btnPickLocation"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        style="?android:textAppearanceSmall"
-        android:textStyle="bold"
-        android:text="PICK LOCATION"/>
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="OR"
-
-        />
-    <Button
-        android:id="@+id/btnHere"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        style="?android:textAppearanceSmall"
-        android:textStyle="bold"
-        android:text="HERE"/>
-        <include layout="@layout/progress_overlay"/>
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/line4"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="26dp"
-        android:layout_below="@+id/line3">
-
-        <EditText
-            android:id="@+id/txtSetDateAndTime"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Select date and time"
-            android:inputType="text"
-            android:maxLines="1"
-            android:singleLine="true"
-            android:clickable="false"
-            android:cursorVisible="false"
-            android:focusable="false"
-            android:focusableInTouchMode="false"
-            />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/line5"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_below="@+id/line4"
-        >
-
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <EditText
-                android:id="@+id/descriptionText"
+            <RelativeLayout
+                android:id="@+id/line2"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_width="fill_parent"
-                android:hint="Description"
-                android:inputType="textMultiLine"
-                android:lines="3"
-                android:maxLines="5"
-                android:gravity="top|left"
-                android:scrollbars="vertical"
+                android:layout_below="@+id/line1">
+
+                <com.cg.lostfoundapp.widget.DelayedAutocompleteTextView
+                    android:id="@+id/autocompletePlaces"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="9dp"
+                    android:inputType="textMultiLine"
+                    android:background="@drawable/edit_text_style"
+                    android:textColorHint="@color/grey"
+                    android:hint="@string/autocomplete_hint"
+                    android:drawableLeft="@drawable/search"
+                    android:drawablePadding="9dp"
+                    android:textColor="@android:color/primary_text_light" />
+
+
+                <ImageView
+                    android:id="@+id/cross"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginTop="26dp"
+                    android:layout_marginRight="20dp"
+                    android:src="@drawable/cross"/>
+            </RelativeLayout>
+
+            <LinearLayout
+                android:id="@+id/line3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/line2"
+                android:layout_marginTop="26dp"
+                android:layout_marginLeft="30dp"
+                >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="OR"
+
                 />
-        </android.support.design.widget.TextInputLayout>
+            <Button
+                android:id="@+id/btnPickLocation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="?android:textAppearanceSmall"
+                android:textStyle="bold"
+                android:text="PICK LOCATION"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="OR"
 
-        <Button
-            android:id="@+id/postButton"
-            style="?android:textAppearanceSmall"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="POST"
-            android:textStyle="bold" />
+                />
+            <Button
+                android:id="@+id/btnHere"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="?android:textAppearanceSmall"
+                android:textStyle="bold"
+                android:text="HERE"/>
+                <include layout="@layout/progress_overlay"/>
+            </LinearLayout>
 
-    </LinearLayout>
+            <LinearLayout
+                android:id="@+id/line4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="26dp"
+                android:layout_below="@+id/line3">
+
+                <EditText
+                    android:id="@+id/txtSetDateAndTime"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Select date and time"
+                    android:inputType="text"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:clickable="false"
+                    android:cursorVisible="false"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false"
+                    />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/line5"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_below="@+id/line4"
+                >
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <EditText
+                        android:id="@+id/descriptionText"
+                        android:layout_height="wrap_content"
+                        android:layout_width="fill_parent"
+                        android:hint="Description"
+                        android:inputType="textMultiLine"
+                        android:lines="3"
+                        android:maxLines="5"
+                        android:gravity="top|left"
+                        android:scrollbars="vertical"
+                        />
+                </android.support.design.widget.TextInputLayout>
+
+                <Button
+                    android:id="@+id/postButton"
+                    style="?android:textAppearanceSmall"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="POST"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+        </RelativeLayout>
+    </ScrollView>
+    <include
+        android:id="@+id/progress_overlay_big"
+        layout="@layout/progress_overlay"/>
 </RelativeLayout>
-
-</ScrollView>

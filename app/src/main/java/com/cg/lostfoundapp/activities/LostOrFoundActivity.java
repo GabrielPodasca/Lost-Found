@@ -61,6 +61,7 @@ public class LostOrFoundActivity extends AppCompatActivity {
     private EditText txtSetDateAndTime;
     private ImageView deleteImage;
     private View progressOverlay;
+    private View progressOverlayBig;
 
     private String itemName, itemDescription;
     private String itemType;
@@ -144,6 +145,7 @@ public class LostOrFoundActivity extends AppCompatActivity {
             }
         });
         progressOverlay = findViewById(R.id.progress_overlay);
+        progressOverlayBig = findViewById(R.id.progress_overlay_big);
 
     }
 
@@ -346,19 +348,23 @@ public class LostOrFoundActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == PlacesUtils.PLACE_PICKER_REQUEST
-                && resultCode == Activity.RESULT_OK) {
-            final Place place = PlacePicker.getPlace(data,this);
-
-            String address = place.getAddress().toString();
-
-            autocompletePlaces.setSearchEnabled(false);
-            autocompletePlaces.setText(address);
-            autocompletePlaces.setSearchEnabled(true);
-
-            placesDetails = new PlacesDetails(place.getLatLng(), address);
+        if (requestCode == PlacesUtils.PLACE_PICKER_REQUEST) {
 
             ViewUtils.animateView(progressOverlay, View.GONE, 0, 200);
+
+            if (resultCode == Activity.RESULT_OK) {
+                final Place place = PlacePicker.getPlace(data,this);
+
+                String address = place.getAddress().toString();
+
+                autocompletePlaces.setSearchEnabled(false);
+                autocompletePlaces.setText(address);
+                autocompletePlaces.setSearchEnabled(true);
+
+                placesDetails = new PlacesDetails(place.getLatLng(), address);
+            }
+
+
 
         } else {
             super.onActivityResult(requestCode, resultCode, data);
@@ -378,7 +384,7 @@ public class LostOrFoundActivity extends AppCompatActivity {
         Date when = calendar.getTime();
 
         try {
-            validateItem();
+            validate();
         }
         catch(Exception e) {
             Toast.makeText(this,e.getMessage(),Toast.LENGTH_SHORT).show();
@@ -393,7 +399,7 @@ public class LostOrFoundActivity extends AppCompatActivity {
 
     }
 
-    private void validateItem() throws Exception{
+    private void validate() throws Exception{
 
 
         if (itemName == null || itemName.trim().isEmpty()) {
@@ -409,6 +415,13 @@ public class LostOrFoundActivity extends AppCompatActivity {
             throw new Exception("Please describe the item!");
         }
 
+    }
+
+    private void startMainActivity(){
+        Intent intent = new Intent(LostOrFoundActivity.this, MainActivity.class);
+        intent.putExtra("user",this.user);
+        startActivity(intent);
+        finish();
     }
 
     @Override
@@ -448,12 +461,29 @@ public class LostOrFoundActivity extends AppCompatActivity {
         }
     }
 
-    private class ItemAddAsyncTask extends AsyncTask<Item, Void, Void> {
+    private class ItemAddAsyncTask extends AsyncTask<Item, Void, String> {
 
         @Override
-        protected Void doInBackground(Item... params) {
-            ItemWSController.getInstance().add(params[0]);
-            return null;
+        protected void onPreExecute() {
+            ViewUtils.animateView(progressOverlayBig, View.VISIBLE, 0.4f, 200);
+        }
+
+        @Override
+        protected String doInBackground(Item... params) {
+            return ItemWSController.getInstance().add(params[0]);
+        }
+
+        @Override
+        protected void onPostExecute(String response) {
+
+            ViewUtils.animateView(progressOverlayBig, View.GONE, 0, 200);
+
+            if (response!=null) {
+                Toast.makeText(LostOrFoundActivity.this, response, Toast.LENGTH_SHORT).show();
+                if (response.equals("OK")) {
+                    startMainActivity();
+                }
+            }
         }
     }
 

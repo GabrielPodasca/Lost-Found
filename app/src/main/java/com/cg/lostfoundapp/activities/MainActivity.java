@@ -1,6 +1,7 @@
 package com.cg.lostfoundapp.activities;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -21,9 +22,13 @@ import com.cg.lostfoundapp.adapters.ItemFoundAdapter;
 import com.cg.lostfoundapp.manager.PreferencesManager;
 import com.cg.lostfoundapp.model.Item;
 import com.cg.lostfoundapp.model.FoundItem;
+import com.cg.lostfoundapp.model.KVMList;
+import com.cg.lostfoundapp.model.KVMListItem;
 import com.cg.lostfoundapp.model.User;
+import com.cg.lostfoundapp.service.ItemWSController;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -82,6 +87,8 @@ public class MainActivity extends AppCompatActivity
         toggle.syncState();
 
         navigationView.setNavigationItemSelectedListener(this);
+
+        new ItemtListAsyncTask().execute();
 
     }
 
@@ -189,5 +196,20 @@ public class MainActivity extends AppCompatActivity
         foundItemList.add(new FoundItem("Legitimatie", "Ieri @ 12:43"));
 
         foundListAdapter.notifyDataSetChanged();
+    }
+
+    private class ItemtListAsyncTask extends AsyncTask<Void, Void, KVMListItem> {
+
+        @Override
+        protected KVMListItem doInBackground(Void... params) {
+            return ItemWSController.getInstance().get();
+        }
+
+        @Override
+        protected void onPostExecute(KVMListItem items) {
+            for (Item item : items) {
+                System.out.println(item);
+            }
+        }
     }
 }
