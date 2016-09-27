@@ -3,6 +3,7 @@ package com.cg.lostfoundapp.activities;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -19,11 +20,13 @@ import android.widget.Toast;
 
 import com.cg.lostfoundapp.R;
 import com.cg.lostfoundapp.adapters.ItemFoundAdapter;
+import com.cg.lostfoundapp.adapters.ItemLostAdapter;
 import com.cg.lostfoundapp.manager.PreferencesManager;
 import com.cg.lostfoundapp.model.Item;
 import com.cg.lostfoundapp.model.FoundItem;
 import com.cg.lostfoundapp.model.KVMList;
 import com.cg.lostfoundapp.model.KVMListItem;
+import com.cg.lostfoundapp.model.ListType;
 import com.cg.lostfoundapp.model.User;
 import com.cg.lostfoundapp.service.ItemWSController;
 
@@ -33,9 +36,14 @@ import java.util.Date;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private ListView foundList;
-    private ArrayList<FoundItem> foundItemList = new ArrayList<>();
+    private ListView list;
+
+    private ArrayList<Item> foundItemList = new ArrayList<>();
     private ItemFoundAdapter foundListAdapter = new ItemFoundAdapter(this,foundItemList);
+    private ArrayList<Item> lostItemList = new ArrayList<>();
+    private ItemLostAdapter lostListAdapter = new ItemLostAdapter(this,lostItemList);
+
+    private ListType listType;
 
     private Toolbar toolbar;
     private DrawerLayout drawer;
@@ -56,9 +64,6 @@ public class MainActivity extends AppCompatActivity
 
         initComponents();
 
-        foundList.setAdapter(foundListAdapter);
-        fillFoundItemList();
-
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             user = (User) extras.getSerializable("user");
@@ -66,16 +71,12 @@ public class MainActivity extends AppCompatActivity
                 username = user.getUsername();
                 phoneNumber = user.getPhoneNumber();
             }
-
         }
-
 
         if (user == null) {
             removeRemember();
             finish();
         }
-
-
  
         phoneNumberMainAppText.setText(phoneNumber);
         usernameMainAppText.setText(username);
@@ -95,12 +96,14 @@ public class MainActivity extends AppCompatActivity
     public void initComponents(){
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        foundList = (ListView) findViewById(R.id.foundList);
+        list = (ListView) findViewById(R.id.list);
 
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navHeaderView = navigationView.inflateHeaderView(R.layout.nav_header_main);
         usernameMainAppText = (TextView) navHeaderView.findViewById(R.id.usernameMainAppText);
         phoneNumberMainAppText = (TextView) navHeaderView.findViewById(R.id.phoneNumberMainAppText);
+
+        listType = ListType.LOST;
     }
 
 
@@ -155,10 +158,14 @@ public class MainActivity extends AppCompatActivity
             String title = item.getTitle().toString();
             if(title.equals("Switch List(LOST ON)")){
                 title = "Switch List(FOUND ON)";
-                Toast.makeText(MainActivity.this,"FOUND LIST ON",Toast.LENGTH_LONG).show();
+                Toast.makeText(MainActivity.this,"FOUND LIST ON",Toast.LENGTH_SHORT).show();
+                listType = ListType.FOUND;
+                new ItemtListAsyncTask().execute();
             }else{
                 title = "Switch List(LOST ON)";
-                Toast.makeText(MainActivity.this,"LOST LIST ON",Toast.LENGTH_LONG).show();
+                Toast.makeText(MainActivity.this,"LOST LIST ON",Toast.LENGTH_SHORT).show();
+                listType = ListType.LOST;
+                new ItemtListAsyncTask().execute();
             }
             item.setTitle(title);
         }
@@ -183,21 +190,6 @@ public class MainActivity extends AppCompatActivity
                 .commit();
     }
 
-    //se va inlocui cu metoda care populeaza lista de obiecte gasite
-    public void fillFoundItemList(){
-        foundItemList.add(new FoundItem("Caine", "Azi @ 08:00"));
-        foundItemList.add(new FoundItem("Portofel", "10-09-2016 @ 12:00"));
-        foundItemList.add(new FoundItem("Legitimatie", "Ieri @ 12:43"));
-        foundItemList.add(new FoundItem("Caine", "Azi @ 08:00"));
-        foundItemList.add(new FoundItem("Portofel", "10-09-2016 @ 12:00"));
-        foundItemList.add(new FoundItem("Legitimatie", "Ieri @ 12:43"));
-        foundItemList.add(new FoundItem("Caine", "Azi @ 08:00"));
-        foundItemList.add(new FoundItem("Portofel", "10-09-2016 @ 12:00"));
-        foundItemList.add(new FoundItem("Legitimatie", "Ieri @ 12:43"));
-
-        foundListAdapter.notifyDataSetChanged();
-    }
-
     private class ItemtListAsyncTask extends AsyncTask<Void, Void, KVMListItem> {
 
         @Override
@@ -207,9 +199,36 @@ public class MainActivity extends AppCompatActivity
 
         @Override
         protected void onPostExecute(KVMListItem items) {
+            clearLists();
             for (Item item : items) {
-                System.out.println(item);
+                if(item.getType().equals("LOST")){
+                    lostItemList.add(item);
+                }
+                if(item.getType().equals("FOUND")){
+                    foundItemList.add(item);
+                }
             }
+            switch(listType){
+                case LOST:
+                    list.setAdapter(lostListAdapter);
+                    lostListAdapter.notifyDataSetChanged();
+                    break;
+                case FOUND:
+                    list.setAdapter(foundListAdapter);
+                    foundListAdapter.notifyDataSetChanged();
+                    break;
+                case PERSONAL:
+                    //to do
+                    break;
+            }
+
         }
+    }
+
+    public void clearLists(){
+        lostItemList.clear();
+        lostListAdapter.notifyDataSetChanged();
+        foundItemList.clear();
+        foundListAdapter.notifyDataSetChanged();
     }
 }

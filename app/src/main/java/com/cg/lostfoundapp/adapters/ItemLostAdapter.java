@@ -11,18 +11,20 @@ import android.widget.TextView;
 
 import com.cg.lostfoundapp.R;
 import com.cg.lostfoundapp.activities.FoundItemActivity;
+import com.cg.lostfoundapp.activities.LostItemActivity;
 import com.cg.lostfoundapp.model.FoundItem;
 import com.cg.lostfoundapp.model.Item;
 
 import java.util.ArrayList;
 
-
-public class ItemFoundAdapter extends BaseAdapter {
+/**
+ * Created by Client2_2 on 9/27/2016.
+ */
+public class ItemLostAdapter extends BaseAdapter {
     private Context context; //context
     private ArrayList<Item> items; //data source of the list adapter
 
-    //public constructor
-    public ItemFoundAdapter(Context context, ArrayList<Item> items) {
+    public ItemLostAdapter(Context context, ArrayList<Item> items) {
         this.context = context;
         this.items = items;
     }
@@ -47,7 +49,7 @@ public class ItemFoundAdapter extends BaseAdapter {
         // inflate the layout for each list row
         if (convertView == null) {
             convertView = LayoutInflater.from(context).
-                    inflate(R.layout.found_item_listview, parent, false);
+                    inflate(R.layout.lost_item_listview, parent, false);
         }
 
         // get current item to be displayed
@@ -67,7 +69,7 @@ public class ItemFoundAdapter extends BaseAdapter {
         arrowImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, FoundItemActivity.class);
+                Intent intent = new Intent(context, LostItemActivity.class);
                 context.startActivity(intent);
             }
         });

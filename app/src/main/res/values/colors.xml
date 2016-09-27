@@ -6,5 +6,6 @@
     <color name="grey">#e3e3e3</color>
     <color name="background_color">#FFA500</color>
     <color name="border_color">#191970</color>
-    <color name="item_backgroung">#00FF7F</color>
+    <color name="item_backgroung">#C35817</color>
+    <color name="item2_background">#FF228B22</color>
 </resources>
