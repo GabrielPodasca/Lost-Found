@@ -3,8 +3,6 @@ package com.cg.lostfoundapp.activities;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -13,7 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ArrayAdapter;
+import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,18 +21,20 @@ import com.cg.lostfoundapp.adapters.ItemFoundAdapter;
 import com.cg.lostfoundapp.adapters.ItemLostAdapter;
 import com.cg.lostfoundapp.manager.PreferencesManager;
 import com.cg.lostfoundapp.model.Item;
-import com.cg.lostfoundapp.model.FoundItem;
-import com.cg.lostfoundapp.model.KVMList;
 import com.cg.lostfoundapp.model.KVMListItem;
-import com.cg.lostfoundapp.model.ListType;
 import com.cg.lostfoundapp.model.User;
 import com.cg.lostfoundapp.service.ItemWSController;
 
 import java.util.ArrayList;
-import java.util.Date;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    public static final String FOUND = "FOUND";
+    public static final String LOST = "LOST";
+    public static final String PERSONAL = "PERSONAL";
+    public static final String OPTION_FOUND = "Switch List(FOUND ON)";
+    public static final String OPTION_LOST = "Switch List(LOST ON)";
 
     private ListView list;
 
@@ -43,7 +43,8 @@ public class MainActivity extends AppCompatActivity
     private ArrayList<Item> lostItemList = new ArrayList<>();
     private ItemLostAdapter lostListAdapter = new ItemLostAdapter(this,lostItemList);
 
-    private ListType listType;
+    private PreferencesManager preferencesManager;
+    private String listType;
 
     private Toolbar toolbar;
     private DrawerLayout drawer;
@@ -61,6 +62,8 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        preferencesManager = new PreferencesManager(this);
 
         initComponents();
 
@@ -103,15 +106,30 @@ public class MainActivity extends AppCompatActivity
         usernameMainAppText = (TextView) navHeaderView.findViewById(R.id.usernameMainAppText);
         phoneNumberMainAppText = (TextView) navHeaderView.findViewById(R.id.phoneNumberMainAppText);
 
-        listType = ListType.LOST;
+        listType = preferencesManager.getString("listType");
+        if (listType==null) {
+            listType = MainActivity.LOST;
+        }
+
     }
 
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
+        getMenuInflater().inflate(R.menu.activity_main_drawer, menu);
+
         return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+
+        MenuItem iSwitchList = menu.findItem(R.id.navSwitchLists);
+
+        iSwitchList.setTitle(listType.equals(MainActivity.LOST) ? OPTION_LOST : OPTION_FOUND);
+
+        return super.onPrepareOptionsMenu(menu);
     }
 
     @Override
@@ -155,19 +173,23 @@ public class MainActivity extends AppCompatActivity
         }
 
         if(id == R.id.navSwitchLists){
-            String title = item.getTitle().toString();
-            if(title.equals("Switch List(LOST ON)")){
-                title = "Switch List(FOUND ON)";
-                Toast.makeText(MainActivity.this,"FOUND LIST ON",Toast.LENGTH_SHORT).show();
-                listType = ListType.FOUND;
-                new ItemtListAsyncTask().execute();
-            }else{
-                title = "Switch List(LOST ON)";
-                Toast.makeText(MainActivity.this,"LOST LIST ON",Toast.LENGTH_SHORT).show();
-                listType = ListType.LOST;
-                new ItemtListAsyncTask().execute();
+            String title = null;
+            switch (listType) {
+                case MainActivity.FOUND:
+                    listType = MainActivity.LOST;
+                    title = OPTION_LOST;
+                    break;
+                default:
+                    listType = MainActivity.FOUND;
+                    title = OPTION_FOUND;
+                    break;
+
             }
+
+            preferencesManager.setString("listType", listType).commit();
             item.setTitle(title);
+            Toast.makeText(MainActivity.this,title,Toast.LENGTH_SHORT).show();
+            new ItemtListAsyncTask().execute();
         }
 
         if(id == R.id.navLogout){
@@ -183,7 +205,6 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void removeRemember() {
-        PreferencesManager preferencesManager = new PreferencesManager(this);
         preferencesManager
                 .remove("username")
                 .remove("password")
